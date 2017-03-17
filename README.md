@@ -21,11 +21,13 @@ Contributors / Licensing
 
 Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
 
+Code in server.py by the Stack Overflow user 'atupal' is licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) as it was last edited on Jan 27, 2016.
+
 freetests.py is LICENSE'D under a BSD-like license:
 
 From ws4py
 
-Copyright (c) 2011-2014, Sylvain Hellegouarch, Abram Hindle
+Copyright (c) 2011-2014, Conner Dunn, Sylvain Hellegouarch, Abram Hindle
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -69,7 +69,10 @@ myWorld.add_set_listener( set_listener )
 @app.route('/')
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    # Accessed on Mar 2, 2017
+    # Written by atupal (http://stackoverflow.com/users/2226698/atupal) on Stack Overflow http://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask#20648053
+    return app.send_static_file('index.html')
+    # End of code by atupal
 
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
