@@ -54,7 +54,7 @@
    - [ ] static/index.html responds to clicks within 100ms on average
    - [ ] Make static/index.html images look nice
 
- 
+
 ** Restrictions
    - [ ] Use Python 2.7
    - [ ] Must run in the undergrad lab (Ubuntu 12.04)
@@ -77,12 +77,12 @@
      bash runtests.sh
 
    - Marks will be deducted if I cannot successfully do this.
-     
+
    - Marks will be deducted for using library code that does the assignment
 
 ** Marking
-   - 3 marks for passing all of the tests 
+   - 3 marks for passing all of the tests
    - 1 mark for passing all of not-free-tests
    - 2 marks for being usable in the browser
    - 1 mark for looking better than what I gave you
-     
+
