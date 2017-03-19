@@ -125,6 +125,7 @@ function addEntity(entity, data) {
   world[entity] = data;
   drawNextFrame(); // (but should we?)
   //XXX: Send a XHTML Request that updates the entity you just modified!
+  socket.send('addEntity');  // TODO: why can't the python server recieve this?
 }
 var counter = 0;
 function addEntityWithoutName(data) {
@@ -239,8 +240,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-  addEntityWithoutName({'x':x,'y':y,'colour':'green',
-    'radius':10});
+  addEntityWithoutName({'x':x,'y':y,'colour':'green','radius':10});
 });
 
 
@@ -254,6 +254,7 @@ function wsSetup() {
   socket = new WebSocket(url);
   socket.onopen = function() {
     //XXX: TODO What are you going to do here?
+    socket.send("onopen subscribe");
   };
   socket.onerror = function(msg) {
     debug("WebSocket Error:" + msg.data);
@@ -262,6 +263,7 @@ function wsSetup() {
     try {
       debug("WebSocket Recv:" + msg.data);
       //XXX: TODO What are you going to do here?
+      console.log(msg.data);
     } catch (e) {
       alert("socket on message: " + e);
     }

@@ -21,7 +21,8 @@ Contributors / Licensing
 
 Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
 
-Code in server.py by the Stack Overflow user 'atupal' is licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) as it was last edited on Jan 27, 2016.
+Code in sockets.py by the Stack Overflow user 'atupal' is licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) as it was last edited on Jan 27, 2016.
+Code in sockets.py by Abram Hindle is also licensed un Apache 2 accessed from [WebSocketsExamples](https://github.com/abramhindle/WebSocketsExamples), accessed on Mar 19, 2017, some changes have been made but see inline comments for details.
 
 freetests.py is LICENSE'D under a BSD-like license:
 
@@ -60,3 +61,9 @@ Contributors
 * Mark Galloway
 * Abram Hindle
 * Coner Dunn
+
+Resources Used
+==============
+- [Flask-Sockets](https://github.com/kennethreitz/flask-sockets), accessed Mar 16, 2017
+- [Python Docs Json](https://docs.python.org/2/library/json.html), accessed Mar 19, 2017
+- [WebSocketsExamples](https://github.com/abramhindle/WebSocketsExamples), accessed Mar 19, 2017

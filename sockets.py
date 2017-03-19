@@ -42,8 +42,9 @@ class World:
         self.update_listeners( entity )
 
     def set(self, entity, data):
+        # print "in World set", entity, data
         self.space[entity] = data
-        self.update_listeners( entity )
+        self.update_listeners(entity)
 
     def update_listeners(self, entity):
         '''update the set listeners'''
@@ -61,10 +62,30 @@ class World:
 
 myWorld = World()
 
-def set_listener( entity, data ):
+def set_listener(entity, data):
     ''' do something with the update ! '''
+    json_string = json.dumps({entity: data})
+    for client in clients:
+        client.put(json_string)
 
 myWorld.add_set_listener( set_listener )
+
+# this block is Licensed under Apache 2.0 by Abram Hindle
+# source: https://github.com/abramhindle/WebSocketsExamples/blob/master/chat.py
+# accessed on March 19, 2017
+# no changes where made
+clients = list()
+
+class Client:
+    def __init__(self):
+        self.queue = queue.Queue()
+
+    def put(self, v):
+        self.queue.put_nowait(v)
+
+    def get(self):
+        return self.queue.get()
+# end of Abram Hindle's code
 
 @app.route('/')
 def hello():
@@ -74,18 +95,54 @@ def hello():
     return app.send_static_file('index.html')
 # End of code by atupal
 
-def read_ws(ws,client):
+def read_ws(websocket):
     '''A greenlet function that reads from the websocket and updates the world'''
-    # XXX: TODO IMPLEMENT ME
-    return None
+    # this block is Licensed under Apache 2.0 by Abram Hindle
+    # source: https://github.com/abramhindle/WebSocketsExamples/blob/master/chat.py
+    # accessed on March 19, 2017
+    # changes are stated as inline comments
+    try:
+        while True:
+            msg = websocket.receive()
+            print "WS RECV: %s" % msg
+            if msg is not None:
+                # eg packet: {"X2999": {"y": 2999, "x": 2999}}
+                packet = json.loads(msg)
+                # I am looping through the objects to set them to my instance of a world object
+                # Abram Hindle's origninal code did not do this
+                for pkey in packet:
+                    myWorld.set(pkey, packet[pkey])
+                # I also deleted the 'send_all_json( packet )' line as myWorld instance will notify the clients through a listener
+            else:
+                break
+    except:
+        pass
+    # end of Abram Hindle's code
 
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
-    # XXX: TODO IMPLEMENT ME
+    # this block is Licensed under Apache 2.0 by Abram Hindle
+    # source: https://github.com/abramhindle/WebSocketsExamples/blob/master/chat.py
+    # accessed on March 19, 2017
+    # changes are stated as inline comments
+    client = Client()
+    clients.append(client)
+    g = gevent.spawn(read_ws, ws)  # I deleted the client pram to read_ws as it was not used
+    try:
+        while True:
+            # block here
+            msg = client.get()
+            # print "sending msg to client", msg  # I added this line for debugging
+            ws.send(msg)
+    except Exception as e:# WebSocketError as e:
+        print "WS Error %s" % e
+    finally:
+        clients.remove(client)
+        gevent.kill(g)
     return None
-
+    # end of Abram Hindle's code
 
 def flask_post_json():
     '''Ah the joys of frameworks! They do so much work for you
