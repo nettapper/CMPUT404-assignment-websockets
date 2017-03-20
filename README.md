@@ -70,3 +70,7 @@ Resources Used
 - [W3Schools Canvas Methods](https://www.w3schools.com/tags/ref_canvas.asp), accessed Mar 19, 2017
 - [W3Schools Canvas MoveTo](https://www.w3schools.com/tags/canvas_moveto.asp), accessed Mar 19, 2017
 - [W3Schools Canvas LineTo](https://www.w3schools.com/tags/canvas_lineto.asp), accessed Mar 19, 2017
+
+ScreenShot
+==========
+![](./screenie.png)
