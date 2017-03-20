@@ -26,12 +26,6 @@ app = Flask(__name__)
 sockets = Sockets(app)
 app.debug = True
 
-# Accessed on Mar 2, 2017
-# Written by atupal (http://stackoverflow.com/users/2226698/atupal) on Stack Overflow http://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask#20648053
-# set the project root directory as the static folder, you can set others.
-app = Flask(__name__, static_url_path='')
-# End of code by atupal
-
 class World:
     def __init__(self):
         self.clear()
@@ -96,10 +90,7 @@ class Client:
 @app.route('/')
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    # Accessed on Mar 2, 2017
-    # Written by atupal (http://stackoverflow.com/users/2226698/atupal) on Stack Overflow http://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask#20648053
-    return app.send_static_file('index.html')
-# End of code by atupal
+    return flask.redirect("/static/index.html")
 
 def read_ws(websocket):
     '''A greenlet function that reads from the websocket and updates the world'''
@@ -133,8 +124,10 @@ def subscribe_socket(ws):
     # source: https://github.com/abramhindle/WebSocketsExamples/blob/master/chat.py
     # accessed on March 19, 2017
     # changes are stated as inline comments
+    print "A new client!"  # Added this line for debugging
     client = Client()
     clients.append(client)
+    client.put(json.dumps(myWorld.world()))  # I added this because I want to send the entire world to the client on first connection
     g = gevent.spawn(read_ws, ws)  # I deleted the client pram to read_ws as it was not used
     try:
         while True:
