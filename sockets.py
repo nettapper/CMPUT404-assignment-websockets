@@ -26,6 +26,12 @@ app = Flask(__name__)
 sockets = Sockets(app)
 app.debug = True
 
+# Accessed on Mar 2, 2017
+# Written by atupal (http://stackoverflow.com/users/2226698/atupal) on Stack Overflow http://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask#20648053
+# set the project root directory as the static folder, you can set others.
+app = Flask(__name__, static_url_path='')
+# End of code by atupal
+
 class World:
     def __init__(self):
         self.clear()
