@@ -48,13 +48,30 @@ world = {};
 function drawCircle(context,entity) {
   with(context) {
     beginPath();
-    lineWidth = 3;
     var x = entity["x"];
     var y = entity["y"];
+    var lineWidth = entity["lineWidth"];
     //moveTo(x,y);
     fillStyle = entity["colour"];
     strokeStyle = fillStyle;
-    arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);
+    var shape = entity["shape"];
+    if(shape == "arc"){
+      arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);
+    } else if(shape == "square") {
+      moveTo(x - 0.5 * entity["radius"], y - 0.5 * entity["radius"]);
+      lineTo(x + 0.5 * entity["radius"], y - 0.5 * entity["radius"]);
+      lineTo(x + 0.5 * entity["radius"], y + 0.5 * entity["radius"]);
+      lineTo(x - 0.5 * entity["radius"], y + 0.5 * entity["radius"]);
+      lineTo(x - 0.5 * entity["radius"], y - 0.5 * entity["radius"]);
+    } else if(shape == "triangle") {
+      moveTo(x - 1.2 * entity["radius"], y + 1.2 * entity["radius"]);
+      lineTo(x + 1.2 * entity["radius"], y + 1.2 * entity["radius"]);
+      lineTo(x - 1.2 * entity["radius"], y - 0.9 * entity["radius"]);
+      moveTo(x - 1.2 * entity["radius"], y + 1.2 * entity["radius"]);
+      lineTo(x - 1.2 * entity["radius"], y - 0.9 * entity["radius"]);
+    } else {
+      console.log("I can't draw that shape");
+    }
     stroke();
   }
 }
@@ -65,6 +82,12 @@ function prepEntity(entity) {
   }
   if (!entity["radius"]) {
     entity["radius"] = 50;
+  }
+  if (!entity["lineWidth"]) {
+    entity["lineWidth"] = 5;
+  }
+  if (!entity["shape"]) {
+    entity["shape"] = randShape();
   }
   return entity;
 }
@@ -124,7 +147,7 @@ function getPosition(e) {
 function addEntity(entity, data) {
   world[entity] = data;
   drawNextFrame(); // (but should we?)
-  //XXX: Send a XHTML Request that updates the entity you just modified!
+  //Send a XHTML Request that updates the entity you just modified!
   toClient = {};
   toClient[entity] = data;
   socket.send(JSON.stringify(toClient));
@@ -231,20 +254,44 @@ mouse = (function() {
   return self;
 })();
 
+function randomRGBString() {
+  v1 = Math.floor(Math.random() * 255);
+  v2 = Math.floor(Math.random() * 255);
+  v3 = Math.floor(Math.random() * 255);
+  return 'rgb('+ v1 +',' + v2 + ',' + v3 + ')'
+}
+
+function randomRadius() {
+  return Math.random() * 45 + 5; // between [50, 5]
+}
+
+// I want to shift the line width by +/- a rand value while still keeping the lineWidth between 2 and 12 inclusive
+function randomLineWidth() {
+  return Math.random() * 10 + 5;
+}
+
+function randShape() {
+  r = Math.ceil(Math.random() * 3);
+  if(r == 1) {
+    return "arc";
+  } else if (r == 2) {
+    return "square"
+  } else {
+    return "triangle"
+  }
+}
+
 // Add the application specific mouse listeners!
-//XXX: TODO Make these prettier!
+//X: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-  addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+  addEntityWithoutName({'x':x,'y':y,'colour':randomRGBString(),'radius':randomRadius(),'lineWidth':randomLineWidth(),'shape': randShape()});
 });
-
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-  addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+  addEntityWithoutName({'x':x,'y':y,'colour':randomRGBString(),'radius':randomRadius(),'lineWidth':randomLineWidth(),'shape': randShape()});
 });
-
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-  addEntityWithoutName({'x':x,'y':y,'colour':'green','radius':10});
+  addEntityWithoutName({'x':x,'y':y,'colour':randomRGBString(),'radius':randomRadius(),'lineWidth':randomLineWidth(),'shape': randShape()});
 });
-
 
 function update() {
   drawFrame();
@@ -255,10 +302,8 @@ function wsSetup() {
   var url = "ws://"+host+"/subscribe";
   socket = new WebSocket(url);
   socket.onopen = function() {
-    //XXX: TODO What are you going to do here?
-    // A: I should probably send the state of my world
+    // TODO What are you going to do here?
     console.log("websocket connection is open");
-    // by not socket.send()ing None (aka Null) will be sent meaning we want all the data
   };
   socket.onerror = function(msg) {
     debug("WebSocket Error:" + msg.data);
@@ -266,7 +311,7 @@ function wsSetup() {
   socket.onmessage = function(msg) {
     try {
       debug("WebSocket Recv:" + msg.data);
-      //XXX: TODO What are you going to do here?
+      //What are you going to do here?
       console.log(msg.data);
       parsedData = JSON.parse(msg.data);
       console.log(parsedData);
